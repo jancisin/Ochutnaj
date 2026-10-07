@@ -1,0 +1,1 @@
+Apklikácia bude obsahovvať recepty ktoré ai môžu ľudia prečítať, budú môcť pridať vlastné receptry verejné aj súkromné. 3 role, moderátor, majiteľ a používateľ.
