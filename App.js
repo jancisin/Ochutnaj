@@ -25,12 +25,8 @@ function RootStack({
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!activeUser ? (
         <>
-          <Stack.Screen name="SiI">
-            {(props) => <SiI {...props} users={users} onLogin={onLogin} />}
-          </Stack.Screen>
-          <Stack.Screen name="SiO">
-            {(props) => <SiO {...props} users={users} onRegister={onRegister} />}
-          </Stack.Screen>
+          <Stack.Screen name="SignIn" component={SiI} />
+          <Stack.Screen name="SignUp" component={SiO} />
         </>
       ) : (
         <Stack.Screen name="Home">

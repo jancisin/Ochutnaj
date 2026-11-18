@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native"; 
 import AuthLayout from "../components/AuthLayout";
 import Input from "../components/input";
 import PrimaryButton from "../components/PrimaryButton";
 import { COLORS } from "../utils/theme";
 
-// Sign up (registration)
-export default function SiO({ users, onRegister, onGoToSignIn }) {
+export default function SiO({ users, onRegister }) { 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigation = useNavigation();
 
   function submit() {
     if (!name.trim() || !email.trim() || password.length < 6) {
@@ -33,15 +35,10 @@ export default function SiO({ users, onRegister, onGoToSignIn }) {
       <Input value={password} onChangeText={setPassword} secureTextEntry placeholder="Heslo" />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <PrimaryButton onPress={submit}>Vytvoriť účet</PrimaryButton>
-      <Pressable onPress={onGoToSignIn} style={styles.switchButton}>
+      
+      <Pressable onPress={() => navigation.goBack()} style={styles.switchButton}>
         <Text style={styles.switchText}>Už máš účet?  Prihlás sa</Text>
       </Pressable>
     </AuthLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  error: { color: COLORS.danger, backgroundColor: "#F7E7E1", padding: 10, borderRadius: 9, fontSize: 11, fontWeight: "700" },
-  switchButton: { alignItems: "center", padding: 8 },
-  switchText: { color: COLORS.orange, fontSize: 11, fontWeight: "800" },
-});
