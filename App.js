@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import AuthContextProvider, { AuthContext } from "./store/auth-context";
 import SiI from "./screens/SignI";
 import SiO from "./screens/SignO";
 import HomeScreen from "./screens/mainS";
@@ -11,6 +11,7 @@ import { getInitials } from "./utils/helpers";
 const Stack = createNativeStackNavigator();
 
 function RootStack({
+  isSignedIn,
   users,
   recipes,
   activeUser,
@@ -23,7 +24,7 @@ function RootStack({
 }) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!activeUser ? (
+      {!isSignedIn ? (
         <>
           <Stack.Screen name="SiI">{(props) => <SiI {...props} users={users} onLogin={onLogin} />}</Stack.Screen>
           <Stack.Screen name="SiO">{(props) => <SiO {...props} users={users} onRegister={onRegister} />}</Stack.Screen>
@@ -48,12 +49,18 @@ function RootStack({
   );
 }
 
-export default function App() {
+function Navigation() {
+  const { user, isAuthenticated, authenticate, logout } = useContext(AuthContext);
+
   const [users, setUsers] = useState(usersSeed);
   const [recipes, setRecipes] = useState(recipesSeed);
-  const [activeUserId, setActiveUserId] = useState(null);
 
-  const activeUser = users.find((user) => user.id === activeUserId);
+  const activeUser = users.find((u) => u.email === user?.email);
+
+  function login(userId) {
+    const found = users.find((u) => u.id === userId);
+    authenticate({ idToken: "local", localId: String(found.id), email: found.email });
+  }
 
   function register({ name, email, password }) {
     const newUser = {
@@ -65,7 +72,7 @@ export default function App() {
       role: "používateľ",
     };
     setUsers((current) => [...current, newUser]);
-    setActiveUserId(newUser.id);
+    authenticate({ idToken: "local", localId: String(newUser.id), email: newUser.email });
   }
 
   function addRecipe(data, authorId) {
@@ -88,23 +95,32 @@ export default function App() {
 
   function toggleModerator(id) {
     setUsers((current) =>
-      current.map((user) => (user.id === id ? { ...user, role: user.role === "moderátor" ? "používateľ" : "moderátor" } : user)),
+      current.map((u) => (u.id === id ? { ...u, role: u.role === "moderátor" ? "používateľ" : "moderátor" } : u)),
     );
   }
 
   return (
     <NavigationContainer>
       <RootStack
+        isSignedIn={isAuthenticated}
         users={users}
         recipes={recipes}
         activeUser={activeUser}
-        onLogin={setActiveUserId}
+        onLogin={login}
         onRegister={register}
-        onLogout={() => setActiveUserId(null)}
+        onLogout={logout}
         onAddRecipe={addRecipe}
         onRemoveRecipe={removeRecipe}
         onToggleModerator={toggleModerator}
       />
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthContextProvider>
+      <Navigation />
+    </AuthContextProvider>
   );
 }
