@@ -6,7 +6,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { COLORS } from "../utils/theme";
 
 // Sign up (registration)
-export default function SiO({ users, onRegister, onGoToSignIn }) {
+export default function SiO({ users, onRegister, navigation }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,18 +23,14 @@ export default function SiO({ users, onRegister, onGoToSignIn }) {
   }
 
   return (
-    <AuthLayout
-      eyebrow="PRIDAJ SA K NÁM"
-      title="Vytvor si účet"
-      subtitle="Začni si tvoriť kuchárku podľa vlastnej chuti."
-    >
+    <AuthLayout eyebrow="PRIDAJ SA K NÁM" title="Vytvor si účet" subtitle="Začni si tvoriť kuchárku podľa vlastnej chuti.">
       <Input value={name} onChangeText={setName} placeholder="Meno a priezvisko" />
       <Input value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="E-mail" />
       <Input value={password} onChangeText={setPassword} secureTextEntry placeholder="Heslo" />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <PrimaryButton onPress={submit}>Vytvoriť účet</PrimaryButton>
-      <Pressable onPress={onGoToSignIn} style={styles.switchButton}>
-        <Text style={styles.switchText}>Už máš účet?  Prihlás sa</Text>
+      <Pressable onPress={() => navigation.navigate("SiI")} style={styles.switchButton}>
+        <Text style={styles.switchText}>Už máš účet? Prihlás sa</Text>
       </Pressable>
     </AuthLayout>
   );

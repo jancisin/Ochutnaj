@@ -25,12 +25,8 @@ function RootStack({
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!activeUser ? (
         <>
-          <Stack.Screen name="SiI">
-            {(props) => <SiI {...props} users={users} onLogin={onLogin} />}
-          </Stack.Screen>
-          <Stack.Screen name="SiO">
-            {(props) => <SiO {...props} users={users} onRegister={onRegister} />}
-          </Stack.Screen>
+          <Stack.Screen name="SiI">{(props) => <SiI {...props} users={users} onLogin={onLogin} />}</Stack.Screen>
+          <Stack.Screen name="SiO">{(props) => <SiO {...props} users={users} onRegister={onRegister} />}</Stack.Screen>
         </>
       ) : (
         <Stack.Screen name="Home">
@@ -92,11 +88,7 @@ export default function App() {
 
   function toggleModerator(id) {
     setUsers((current) =>
-      current.map((user) =>
-        user.id === id
-          ? { ...user, role: user.role === "moderátor" ? "používateľ" : "moderátor" }
-          : user
-      )
+      current.map((user) => (user.id === id ? { ...user, role: user.role === "moderátor" ? "používateľ" : "moderátor" } : user)),
     );
   }
 
